@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     async function handleSubmit() {
-        // Prevent double submissions
+       
         if (!gameActive || isSubmitting) return;
        
         isSubmitting = true;
