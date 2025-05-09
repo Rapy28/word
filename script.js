@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tile.setAttribute('data-letter', key);
             tile.classList.add('filled');
            
-            // Add animation for feedback
+            
             tile.style.transform = 'scale(1.1)';
             setTimeout(() => {
                 tile.style.transform = 'scale(1)';
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
             restartGameBtn.classList.remove('hidden');
         }
        
-        // Reset submission flag after a short delay to prevent rapid re-submissions
+     
         setTimeout(() => {
             isSubmitting = false;
         }, 300);
@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // Event Listeners
+
     startGameBtn.addEventListener('click', initializeGame);
     restartGameBtn.addEventListener('click', resetGame);
 
