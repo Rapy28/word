@@ -1,6 +1,6 @@
 :root {
-    /* Dark mode color palette */
    
+    --primary-color: #8be94c;
     --primary-hover: #53c705;
     --correct-color: #10b981;
     --present-color: #f59e0b;
@@ -411,14 +411,14 @@ h1 {
 }
 
 
-/* Make sure the tile has a position relative for absolute positioning of pseudo-element */
+
 .tile {
     position: relative;
     overflow: hidden;
 }
 
 
-/* Animation for the swipe effect */
+
 @keyframes swipeReveal {
     0% {
         transform: scaleX(1);
@@ -429,7 +429,7 @@ h1 {
 }
 
 
-/* Update responsive adjustments for the tile */
+
 @media (max-width: 480px) {
     .tile::after {
         font-size: 1.6em;
