@@ -4,7 +4,7 @@
     --primary-hover: #53c705;
     --correct-color: #10b981;
     --present-color: #f59e0b;
-    --absent-color: #4b5563;
+    --absent-color: #da2f01;
     --bg-color: #111827;
     --card-bg: #1f2937;
     --text-color: #e5e7eb;
@@ -330,7 +330,7 @@ h1 {
 }
 
 
-/* Animation for shake */
+
 .shake-animation {
     animation: shake 0.5s;
 }
@@ -357,7 +357,7 @@ h1 {
 }
 
 
-/* Game title animation */
+
 .title-animation {
     display: inline-block;
     animation: float 6s ease-in-out infinite;
