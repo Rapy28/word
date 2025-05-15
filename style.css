@@ -1,10 +1,10 @@
 :root {
-   
+  
     --primary-color: #8be94c;
     --primary-hover: #53c705;
     --correct-color: #10b981;
     --present-color: #f59e0b;
-    --absent-color: #7c0000;
+    --absent-color: #4b5563;
     --bg-color: #111827;
     --card-bg: #1f2937;
     --text-color: #e5e7eb;
@@ -371,7 +371,7 @@ h1 {
 }
 
 
-/* Responsive adjustments */
+
 @media (max-width: 600px) {
     .container {
         padding: 20px 15px;
@@ -427,8 +427,6 @@ h1 {
         transform: scaleX(0);
     }
 }
-
-
 
 @media (max-width: 480px) {
     .tile::after {
