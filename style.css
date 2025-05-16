@@ -136,7 +136,6 @@ h1 {
     align-items: center;
     width: 100%;
     overflow-x: auto;
-    max-width: 100%;
 }
 
 .row {
@@ -169,14 +168,6 @@ h1 {
         width: 45px;
         height: 45px;
         font-size: 1.6em;
-    }
-}
-
-@media (max-width: 360px) {
-    .tile {
-        width: 35px;
-        height: 35px;
-        font-size: 1.2em;
     }
 }
 
@@ -258,7 +249,6 @@ h1 {
     gap: 6px;
     justify-content: center;
     width: max-content;
-    flex-wrap: wrap; /* allow wrapping on small screens */
 }
 
 .key {
@@ -372,15 +362,15 @@ h1 {
     .container {
         padding: 20px 15px;
     }
-
+   
     h1 {
         font-size: 1.8em;
     }
-
+   
     #setup-area {
         padding: 20px 15px;
     }
-
+   
     .key {
         height: 45px;
         padding: 8px 4px;
@@ -411,26 +401,6 @@ h1 {
 
     .container {
         padding: 15px 10px;
-    }
-}
-
-@media (max-width: 360px) {
-    .container {
-        padding: 10px;
-        max-width: 100%;
-    }
-
-    #setup-area {
-        padding: 10px;
-    }
-
-    #setup-area input[type="number"] {
-        width: 60px;
-    }
-
-    .key {
-        font-size: 0.75em;
-        padding: 6px 4px;
     }
 }
 
