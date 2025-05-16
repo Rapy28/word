@@ -13,7 +13,6 @@
     <div class="container">
         <h1>Crosswordle</h1>
 
-
         <div id="setup-area">
             <label for="word-length">Choose word length (3-10) letters:</label>
             <input type="number" id="word-length" min="3" max="10" value="5">
@@ -21,6 +20,14 @@
             <p id="error-message" class="error-message"></p>
         </div>
 
+        <div id="auth-area">
+            <h2>Sign Up</h2>
+            <button id="google-signin-btn" class="google-btn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/2048px-Google_%22G%22_logo.svg.png" alt="Google logo" class="google-icon">
+            <span>Sign up with Google</span>
+            </button>
+            <p id="auth-message" class="error-message"></p>
+        </div>      
 
         <div id="game-area" class="hidden">
             <div id="game-board">
@@ -32,17 +39,21 @@
             <button id="restart-game-btn" class="hidden">Play Again?</button>
         </div>
         <div id="side-color-legend">
-    <h3>TIPS💡</h3>
+    <h3>TIPS 💡</h3>
     <div><span class="legend-box correct"></span> Correct letter</div>
     <div><span class="legend-box present"></span> Right letter, wrong place</div>
     <div><span class="legend-box absent"></span> Letter not in word</div>
-</div>
+    </div>
 
-       
         <div id="word-display"></div>
     </div>
 
+    <div id="leaderboard">
+        <h2>Leaderboard</h2>
+        <ul id="leaderboard-list"></ul>
+    </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
+    <script type="module" src="firebase.js"></script>
 </body>
 </html>
