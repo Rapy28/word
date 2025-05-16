@@ -1,3 +1,6 @@
+import { auth, db } from "./firebase.js";
+import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const wordLengthInput = document.getElementById('word-length');
     const startGameBtn = document.getElementById('start-game-btn');
@@ -10,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorMessage = document.getElementById('error-message');
     const wordDisplay = document.getElementById('word-display');
 
-
     const MAX_GUESSES = 6;
     let currentWordLength = 5;
     let targetWord = '';
@@ -19,8 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameActive = false;
     let isSubmitting = false; 
 
-
-   
     const wordLists = {
         3: ["cat", "dog", "sun", "run", "big", "fly", "try", "cry", "sky", "pie", "ape", "elf", "gem", "ink", "joy", "kit", "log", "map", "owl", "pen"],
         4: ["boat", "tree", "fish", "frog", "jump", "play", "read", "sing", "walk", "talk", "acid", "bake", "calm", "dark", "echo", "fade", "glow", "hike", "idea", "jazz"],
@@ -32,11 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
         10: ["connection", "experience", "technology", "foundation", "university", "restaurant", "strawberry", "watermelon", "basketball", "volleyball", "accomplish", "background", "confidence", "dedication", "efficiency", "friendship", "government", "helicopter", "innovation", "leadership"]
     };
 
-
     function getTargetWordList(length) {
         return wordLists[length] || [];
     }
-
 
     function selectRandomTargetWord(length) {
         const list = getTargetWordList(length);
@@ -48,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return list[Math.floor(Math.random() * list.length)].toUpperCase();
     }
 
-
     function initializeGame() {
         const selectedLength = parseInt(wordLengthInput.value);
         if (isNaN(selectedLength) || selectedLength < 3 || selectedLength > 10) {
@@ -59,20 +56,17 @@ document.addEventListener('DOMContentLoaded', () => {
         currentWordLength = selectedLength;
         targetWord = selectRandomTargetWord(currentWordLength);
 
-
         if (!targetWord) {
             setupArea.classList.remove('hidden');
             gameArea.classList.add('hidden');
             return;
         }
 
-
         gameActive = true;
         currentRow = 0;
         currentCol = 0;
         gameMessage.textContent = 'Guess the word!';
         restartGameBtn.classList.add('hidden');
-
 
         setupArea.classList.add('hidden');
         gameArea.classList.remove('hidden');
@@ -84,11 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Target Word:", targetWord);
     }
 
-
     function createGameBoard() {
         gameBoard.innerHTML = '';
         gameBoard.style.gridTemplateRows = `repeat(${MAX_GUESSES}, 1fr)`;
-
 
         for (let i = 0; i < MAX_GUESSES; i++) {
             const rowDiv = document.createElement('div');
@@ -104,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     function createKeyboard() {
         keyboardArea.innerHTML = '';
         const keysLayout = [
@@ -112,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
             "ASDFGHJKL",
             "ZXCVBNM"
         ];
-
 
         keysLayout.forEach(rowStr => {
             const rowDiv = document.createElement('div');
@@ -128,10 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
             keyboardArea.appendChild(rowDiv);
         });
 
-
         const bottomRow = document.createElement('div');
         bottomRow.classList.add('keyboard-row');
-
 
         const enterBtn = document.createElement('button');
         enterBtn.classList.add('key');
@@ -140,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
         enterBtn.style.minWidth = '60px';
         enterBtn.addEventListener('click', handleSubmit);
         bottomRow.appendChild(enterBtn);
-
 
         const backspaceBtn = document.createElement('button');
         backspaceBtn.classList.add('key');
@@ -153,7 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         keyboardArea.appendChild(bottomRow);
     }
-
 
     function handleKeyPress(key) {
         if (!gameActive || currentCol >= currentWordLength) return;
@@ -173,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     function handleBackspace() {
         if (!gameActive || currentCol <= 0) return;
    
@@ -187,25 +172,21 @@ document.addEventListener('DOMContentLoaded', () => {
         gameMessage.textContent = '';
     }
 
-
     async function handleSubmit() {
        
         if (!gameActive || isSubmitting) return;
-       
         isSubmitting = true;
-
 
         if (currentCol !== currentWordLength) {
             gameMessage.textContent = `Word must be ${currentWordLength} letters long.`;
             shakeCurrentRow();
             isSubmitting = false;
+            await updateLeaderboard(currentRow + 1);
             return;
         }
 
-
         const guess = getCurrentGuess();
         gameMessage.textContent = 'Checking word...';
-
 
         const isValidWord = await checkWordValidity(guess);
         if (!isValidWord) {
@@ -215,23 +196,20 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-
         gameMessage.textContent = '';
         evaluateGuess(guess);
-
 
         if (guess === targetWord) {
             gameMessage.textContent = `Great job! You guessed it in ${currentRow + 1} ${currentRow + 1 === 1 ? "try" : "tries"}! 🎉`;
             gameActive = false;
             restartGameBtn.classList.remove('hidden');
             isSubmitting = false;
+            await updateLeaderboard(currentRow + 1); // number of guesses
             return;
         }
 
-
         currentRow++;
         currentCol = 0;
-
 
         if (currentRow >= MAX_GUESSES) {
             gameMessage.textContent = `Game over. The word was ${targetWord}.`;
@@ -239,12 +217,10 @@ document.addEventListener('DOMContentLoaded', () => {
             restartGameBtn.classList.remove('hidden');
         }
        
-     
         setTimeout(() => {
             isSubmitting = false;
         }, 300);
     }
-
 
     async function checkWordValidity(word) {
         if (!word) return false;
@@ -272,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     function getCurrentGuess() {
         let guess = '';
         for (let i = 0; i < currentWordLength; i++) {
@@ -281,7 +256,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return guess.toUpperCase();
     }
-
 
     function evaluateGuess(guess) {
         const guessArray = guess.split('');
@@ -292,12 +266,10 @@ document.addEventListener('DOMContentLoaded', () => {
             targetLetterCounts[letter] = (targetLetterCounts[letter] || 0) + 1;
         });
    
-    
         for (let i = 0; i < currentWordLength; i++) {
             const tile = document.getElementById(`tile-${currentRow}-${i}`);
             const letter = guessArray[i];
-           
-         
+                  
             tile.setAttribute('data-letter', letter);
            
             if (letter === targetArray[i]) {
@@ -310,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetLetterCounts[letter]--;
             }
         }
-   
      
         for (let i = 0; i < currentWordLength; i++) {
             const tile = document.getElementById(`tile-${currentRow}-${i}`);
@@ -320,7 +291,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 continue;
             }
    
-          
             tile.style.animationDelay = `${i * 0.1}s`;
            
             setTimeout(() => {
@@ -352,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     function updateKeyColor(letter, status) {
         const keyElement = keyboardArea.querySelector(`.key[data-key="${letter}"]`);
         if (keyElement) {
@@ -369,14 +338,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     function updateKeyboardColors() {
         const keys = keyboardArea.querySelectorAll('.key');
         keys.forEach(key => {
             key.classList.remove('correct', 'present', 'absent');
         });
     }
-
 
     function shakeCurrentRow() {
         const rowElement = gameBoard.children[currentRow];
@@ -388,7 +355,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     function resetGame() {
         setupArea.classList.remove('hidden');
         gameArea.classList.add('hidden');
@@ -398,7 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
         restartGameBtn.classList.add('hidden');
         isSubmitting = false;
     }
-
 
     function displayWord(word) {
         wordDisplay.innerHTML = '';
@@ -412,11 +377,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
-
     startGameBtn.addEventListener('click', initializeGame);
     restartGameBtn.addEventListener('click', resetGame);
-
 
     document.addEventListener('keydown', (e) => {
         if (setupArea.classList.contains('hidden') && !gameArea.classList.contains('hidden')) {
@@ -441,4 +403,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    async function updateLeaderboard(tries) {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        try {
+            await addDoc(collection(db, "leaderboard"), {
+                uid: user.uid,
+                displayName: user.displayName || "Anonymous",
+                tries: tries,
+                timestamp: serverTimestamp()
+            });
+            console.log("Leaderboard updated!");
+            await displayLeaderboard(); // Add this line
+        } catch (error) {
+            console.error("Error updating leaderboard:", error);
+        }
+    }
+
+    async function displayLeaderboard() {
+        const leaderboardList = document.getElementById("leaderboard-list");
+        leaderboardList.innerHTML = "";
+
+        const q = query(collection(db, "leaderboard"), orderBy("tries", "asc"), limit(10));
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
+            const li = document.createElement("li");
+            li.textContent = `${data.displayName}: ${data.tries} tries`;
+            leaderboardList.appendChild(li);
+        });
+    }
+    displayLeaderboard(); // display the leaderboard when the page loads !!!
 });
