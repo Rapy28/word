@@ -1,4 +1,5 @@
 :root {
+  
     --primary-color: #8be94c;
     --primary-hover: #53c705;
     --correct-color: #10b981;
@@ -17,11 +18,6 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-}
-
-html, body {
-    max-width: 100vw;
-    overflow-x: hidden;
 }
 
 body {
@@ -97,6 +93,9 @@ h1 {
     color: white;
     border: none;
     padding: 14px 28px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
     font-size: 1.1em;
     border-radius: 8px;
     cursor: pointer;
@@ -129,20 +128,15 @@ h1 {
 }
 
 #game-board {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 10px;
-    margin-bottom: 25px;
-    align-items: center;
-    width: 100%;
-    overflow-x: auto;
+    margin-bottom: 50px;
+    justify-content: center;
 }
 
 .row {
-    display: flex;
+    display: grid;
     gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
 }
 
 .tile {
@@ -159,8 +153,6 @@ h1 {
     background-color: var(--card-bg);
     border-radius: 8px;
     transition: transform 0.2s ease, background-color 0.5s ease, border-color 0.5s ease;
-    position: relative;
-    overflow: hidden;
 }
 
 @media (max-width: 480px) {
@@ -195,28 +187,6 @@ h1 {
     color: white;
 }
 
-.tile.correct::before,
-.tile.present::before,
-.tile.absent::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    transform-origin: left;
-    transform: scaleX(1);
-    z-index: 1;
-    animation: swipeReveal 0.5s forwards;
-    border-radius: 6px;
-}
-
-@keyframes swipeReveal {
-    0% { transform: scaleX(1); }
-    100% { transform: scaleX(0); }
-}
-
 #game-message {
     font-size: 1.1em;
     margin-bottom: 20px;
@@ -240,15 +210,13 @@ h1 {
     justify-content: center;
     margin-bottom: 20px;
     width: 100%;
-    overflow-x: auto;
-    padding-bottom: 10px;
 }
 
 .keyboard-row {
     display: flex;
     gap: 6px;
     justify-content: center;
-    width: max-content;
+    width: 100%;
 }
 
 .key {
@@ -378,32 +346,42 @@ h1 {
     }
 }
 
-@media (max-width: 400px) {
-    .tile {
-        width: 40px;
-        height: 40px;
-        font-size: 1.4em;
-    }
+.tile.correct::before,
+.tile.present::before,
+.tile.absent::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    transform-origin: left;
+    transform: scaleX(1);
+    z-index: 1;
+    animation: swipeReveal 0.5s forwards;
+    border-radius: 6px;
+}
 
-    h1 {
-        font-size: 1.5em;
-    }
+.tile {
+    position: relative;
+    overflow: hidden;
+}
 
-    #setup-area input[type="number"] {
-        width: 70px;
-        padding: 10px;
+@keyframes swipeReveal {
+    0% {
+        transform: scaleX(1);
     }
-
-    .key {
-        font-size: 0.8em;
-        height: 40px;
-    }
-
-    .container {
-        padding: 15px 10px;
+    100% {
+        transform: scaleX(0);
     }
 }
 
+@media (max-width: 480px) {
+    .tile::after {
+        font-size: 1.6em;
+    }
+}
 #side-color-legend {
     position: fixed;
     top: 50%;
@@ -485,4 +463,71 @@ h1 {
     align-items: center;
     gap: 10px;
     margin-top: 20px;
+}
+
+#leaderboard {
+  margin-top: 40px;
+  padding: 40px; /* Wider padding */
+  background: #273261;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  font-family: 'Poppins', sans-serif;
+  color: white;
+}
+
+#leaderboard-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.leaderboard-entry {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+  border: 2px solid white;
+}
+
+.leaderboard-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.leaderboard-name {
+  font-weight: 600;
+}
+
+.leaderboard-tries {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+#main-flex {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 80px;
+    width: 100%;
+}
+
+@media (max-width: 900px) {
+    #main-flex {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    #leaderboard {
+        max-width: 100%;
+        width: 100%;
+    }
 }
