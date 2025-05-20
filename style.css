@@ -394,7 +394,7 @@ h1 {
     color: var(--text-color);
     font-size: 0.95em;
     z-index: 100;
-    width: 200px;
+    width: 300px;
 }
 
 #side-color-legend h3 {
@@ -407,7 +407,7 @@ h1 {
     display: inline-block;
     width: 18px;
     height: 18px;
-    margin-right: 10px;
+    margin-right: 0;
     border-radius: 4px;
     vertical-align: middle;
 }
@@ -468,7 +468,7 @@ h1 {
 #leaderboard {
   margin-top: 40px;
   padding: 40px; /* Wider padding */
-  background: #273261;
+  background: #272f3d;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   max-width: 500px;
@@ -516,7 +516,7 @@ h1 {
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    gap: 80px;
+    gap: 80px; /* Increase this value for a wider gap */
     width: 100%;
 }
 
