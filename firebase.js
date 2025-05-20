@@ -24,6 +24,7 @@ const provider = new GoogleAuthProvider();
 
 
 const googleLogin = document.getElementById("google-signin-btn");
+
 if (googleLogin) {
   googleLogin.addEventListener("click", async () => {
     try {
@@ -52,7 +53,12 @@ if (googleLogin) {
         const existingUsername = userSnap.data().username;
         alert(`Welcome back, ${existingUsername}!`);
       }
+
+  
+      googleLogin.style.display = "none";
+
     } catch (error) {
+
       if (error.code !== 'auth/cancelled-popup-request' && error.code !== 'auth/popup-closed-by-user') {
         alert(`Sign-in failed: ${error.message}`);
       } else {
@@ -66,6 +72,9 @@ if (googleLogin) {
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log('User signed in:', user.email, user.photoURL);
+    if (googleLogin) {
+      googleLogin.style.display = "none"; 
+    }
   }
 });
 
