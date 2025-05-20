@@ -1,5 +1,5 @@
 import { auth, db } from "./firebase.js";
-import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const wordLengthInput = document.getElementById('word-length');
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gameActive = false;
             restartGameBtn.classList.remove('hidden');
             isSubmitting = false;
-            await updateLeaderboard(currentRow + 1); // number of guesses
+            await updateLeaderboard(currentRow + 1);
             return;
         }
 
@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     tile.classList.add('correct');
                     updateKeyColor(letter, 'correct');
-                }, i * 100); // Staggered delay for each tile
+                }, i * 100);
                 targetLetterCounts[letter]--;
             }
         }
@@ -325,7 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateKeyColor(letter, status) {
         const keyElement = keyboardArea.querySelector(`.key[data-key="${letter}"]`);
         if (keyElement) {
-            // Priority: correct > present > absent
             if (status === 'correct') {
                 keyElement.classList.remove('present', 'absent');
                 keyElement.classList.add('correct');
@@ -408,33 +407,55 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = auth.currentUser;
         if (!user) return;
 
-        try {
-            await addDoc(collection(db, "leaderboard"), {
-                uid: user.uid,
-                displayName: user.displayName || "Anonymous",
-                tries: tries,
-                timestamp: serverTimestamp()
-            });
-            console.log("Leaderboard updated!");
-            await displayLeaderboard(); // Add this line
-        } catch (error) {
-            console.error("Error updating leaderboard:", error);
+    try {
+        // Attempt to get the user's custom username from Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userDocRef);
+
+        // Fallback if the document doesn't exist
+        const username = userSnap.exists()
+            ? userSnap.data().username
+            : user.displayName || "Anonymous";
+
+        await addDoc(collection(db, "leaderboard"), {
+            uid: user.uid,
+            username: username,
+            photoURL: user.photoURL || "",
+            tries: tries,
+            timestamp: serverTimestamp()
+        });
+
+        console.log("Leaderboard updated!");
+        await displayLeaderboard();
+    } catch (error) {
+        console.error("Error updating leaderboard:", error);
         }
     }
 
     async function displayLeaderboard() {
+        const leaderboardRef = collection(db, "leaderboard");
+        const q = query(leaderboardRef, orderBy("tries", "asc"), limit(10));
+        const querySnapshot = await getDocs(q);
+
         const leaderboardList = document.getElementById("leaderboard-list");
         leaderboardList.innerHTML = "";
 
-        const q = query(collection(db, "leaderboard"), orderBy("tries", "asc"), limit(10));
-        const querySnapshot = await getDocs(q);
-
         querySnapshot.forEach(doc => {
             const data = doc.data();
+
             const li = document.createElement("li");
-            li.textContent = `${data.displayName}: ${data.tries} tries`;
+            li.classList.add("leaderboard-entry");
+
+            li.innerHTML = `
+                <img src="${data.photoURL || 'https://via.placeholder.com/40'}" alt="avatar" class="leaderboard-avatar">
+                <div class="leaderboard-info">
+                    <span class="leaderboard-name">${data.username || "Anonymous"}</span>
+                    <span class="leaderboard-tries">${data.tries} tries</span>
+                </div>
+            `;
+
             leaderboardList.appendChild(li);
         });
-    }
-    displayLeaderboard(); // display the leaderboard when the page loads !!!
+}
+displayLeaderboard();
 });
