@@ -1,7 +1,6 @@
-// firebase.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-analytics.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -22,18 +21,48 @@ const db = getFirestore(app);
 
 const provider = new GoogleAuthProvider();
 
+import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+
 const googleLogin = document.getElementById("google-signin-btn");
 if (googleLogin) {
   googleLogin.addEventListener("click", () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
+  signInWithPopup(auth, provider)
+    .then(async (result) => {
         const user = result.user;
-        alert(`Signed in as ${user.displayName}`);
-      })
-      .catch((error) => {
-        alert(`Sign-in failed: ${error.message}`);
-      });
+        const userDocRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userDocRef);
+
+      if (!userSnap.exists()) {
+        let username = prompt("Enter a unique username:");
+        if (!username) {
+          alert("Username is required to proceed.");
+          return;
+        }
+
+        await setDoc(userDocRef, {
+          uid: user.uid,
+          email: user.email,
+          username: username,
+          photoURL: user.photoURL,
+          createdAt: serverTimestamp()
+        });
+
+        alert(`Signed up as ${username}`);
+      } else {
+        const existingUsername = userSnap.data().username;
+        alert(`Welcome back, ${existingUsername}!`);
+      }
+    })
+    .catch((error) => {
+      alert(`Sign-in failed: ${error.message}`);
+    });
   });
 }
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log('User signed in:', user.email, user.photoURL);
+  }
+});
 
 export { auth, db };
