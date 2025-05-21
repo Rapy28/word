@@ -24,12 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordLists = {
         3: ["cat", "dog", "sun", "run", "big", "fly", "try", "cry", "sky", "pie", "ape", "elf", "gem", "ink", "joy", "kit", "log", "map", "owl", "pen"],
         4: ["boat", "tree", "fish", "frog", "jump", "play", "read", "sing", "walk", "talk", "acid", "bake", "calm", "dark", "echo", "fade", "glow", "hike", "idea", "jazz"],
-        5: ["apple", "grape", "house", "mouse", "light", "night", "plant", "stone", "water", "earth", "baker", "dream", "flash", "guide", "happy", "image", "joker", "lemon", "magic", "noble"],
-        6: ["banana", "orange", "purple", "window", "garden", "forest", "summer", "winter", "spring", "autumn", "bridge", "candle", "danger", "effort", "flower", "guitar", "honest", "island", "jacket", "keeper"],
-        7: ["chicken", "kitchen", "library", "morning", "evening", "picture", "journey", "country", "holiday", "example", "breathe", "capture", "diamond", "explore", "freedom", "gallery", "history", "inspire", "justice", "kindred"],
-        8: ["mountain", "elephant", "umbrella", "computer", "keyboard", "language", "question", "solution", "tomorrow", "yesterday", "absolute", "champion", "discover", "educate", "festival", "generous", "hospital", "identify", "journey", "knockout"],
-        9: ["adventure", "beautiful", "knowledge", "important", "different", "wonderful", "excellent", "delicious", "celebrate", "happiness", "challenge", "community", "education", "fantastic", "gratitude", "highlight", "influence", "jubilant", "landscape", "marketing"],
-        10: ["connection", "experience", "technology", "foundation", "university", "restaurant", "strawberry", "watermelon", "basketball", "volleyball", "accomplish", "background", "confidence", "dedication", "efficiency", "friendship", "government", "helicopter", "innovation", "leadership"]
+        5: ["apple", "grape", "house", "mouse", "light", "night", "plant", "stone", "water", "earth", "baker", "dream", "flash", "guide", "happy", "image", "joker", "lemon", "magic", "noble"]
     };
 
     function getTargetWordList(length) {
@@ -48,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initializeGame() {
         const selectedLength = parseInt(wordLengthInput.value);
-        if (isNaN(selectedLength) || selectedLength < 3 || selectedLength > 10) {
-            errorMessage.textContent = "Please enter a valid word length (3-10).";
+        if (isNaN(selectedLength) || selectedLength < 3 || selectedLength > 5) {
+            errorMessage.textContent = "Please enter a valid word length (3-5).";
             return;
         }
         errorMessage.textContent = '';
@@ -422,7 +417,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function displayLeaderboard() {
         const leaderboardRef = collection(db, "leaderboard");
-        const q = query(leaderboardRef, orderBy("tries", "asc"), limit(10));
+        const q = query(leaderboardRef, orderBy("tries", "asc"), limit(10
+
+        ));
         const querySnapshot = await getDocs(q);
 
         const leaderboardList = document.getElementById("leaderboard-list");
