@@ -577,6 +577,7 @@ h1 {
     font-size: 14px;
     margin-top: 10px;
     transition: background-color 0.3s;
+    font-family: 'Poppins', sans-serif;
 }
 
 #logout-btn:hover {
