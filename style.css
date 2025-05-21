@@ -28,10 +28,12 @@ body {
     min-height: 100vh;
     background-color: var(--bg-color);
     color: var(--text-color);
-    padding: 30px 15px;
+    padding: 30px;
     transition: background-color 0.3s ease;
+    position: relative;
 }
 
+/* Adjust container positioning */
 .container {
     background-color: var(--card-bg);
     padding: 30px;
@@ -41,6 +43,7 @@ body {
     width: 100%;
     max-width: 550px;
     transition: all 0.3s ease;
+    margin-left: 320px;
 }
 
 h1 {
@@ -382,10 +385,11 @@ h1 {
         font-size: 1.6em;
     }
 }
+
 #side-color-legend {
     position: fixed;
     top: 50%;
-    left: 90px;
+    left: 20px;
     transform: translateY(-50%);
     background-color: var(--accent-light);
     padding: 16px 20px;
@@ -394,7 +398,7 @@ h1 {
     color: var(--text-color);
     font-size: 0.95em;
     z-index: 100;
-    width: 300px;
+    width: 280px;
 }
 
 #side-color-legend h3 {
@@ -518,6 +522,39 @@ h1 {
     justify-content: center;
     gap: 80px; /* Increase this value for a wider gap */
     width: 100%;
+}
+
+/* Media queries for responsive layout */
+@media (max-width: 1024px) {
+    .container {
+        margin-left: 0;
+        max-width: 95%;
+    }
+
+    #side-color-legend {
+        position: static;
+        transform: none;
+        width: 95%;
+        max-width: 550px;
+        margin: 0 auto 20px auto;
+    }
+
+    body {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    #side-color-legend {
+        padding: 12px;
+        font-size: 0.9em;
+    }
 }
 
 @media (max-width: 900px) {
