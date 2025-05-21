@@ -3,7 +3,6 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyDwqFrntmJU12a6wxayeTb-iP0A_ZlDb0Y",
   authDomain: "crosswordle-mg.firebaseapp.com",
@@ -14,14 +13,12 @@ const firebaseConfig = {
   measurementId: "G-7S3RXB44Q1"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 auth.languageCode = 'en';
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
-
 
 const googleLogin = document.getElementById("google-signin-btn");
 
@@ -54,7 +51,6 @@ if (googleLogin) {
         alert(`Welcome back, ${existingUsername}!`);
       }
 
-  
       googleLogin.style.display = "none";
 
     } catch (error) {
@@ -67,7 +63,6 @@ if (googleLogin) {
     }
   });
 }
-
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
