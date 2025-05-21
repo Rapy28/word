@@ -1,7 +1,19 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-analytics.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
 
 
 const firebaseConfig = {
@@ -18,64 +30,89 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
-auth.languageCode = 'en';
+auth.languageCode = "en";
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-
 const googleLogin = document.getElementById("google-signin-btn");
+const buttonText = googleLogin?.querySelector(".btn-text");
 
-if (googleLogin) {
-  googleLogin.addEventListener("click", async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const userDocRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userDocRef);
+const handleSignIn = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    const userDocRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userDocRef);
 
-      if (!userSnap.exists()) {
-        let username = prompt("Enter a unique username:");
-        if (!username) {
-          alert("Username is required to proceed.");
-          return;
-        }
-
-        await setDoc(userDocRef, {
-          uid: user.uid,
-          email: user.email,
-          username: username,
-          photoURL: user.photoURL,
-          createdAt: serverTimestamp()
-        });
-
-        alert(`Signed up as ${username}`);
-      } else {
-        const existingUsername = userSnap.data().username;
-        alert(`Welcome back, ${existingUsername}!`);
+    if (!userSnap.exists()) {
+      let username = prompt("Enter a unique username:");
+      if (!username) {
+        alert("Username is required to proceed.");
+        return;
       }
 
-  
-      googleLogin.style.display = "none";
+      await setDoc(userDocRef, {
+        uid: user.uid,
+        email: user.email,
+        username: username,
+        photoURL: user.photoURL,
+        createdAt: serverTimestamp()
+      });
 
-    } catch (error) {
-
-      if (error.code !== 'auth/cancelled-popup-request' && error.code !== 'auth/popup-closed-by-user') {
-        alert(`Sign-in failed: ${error.message}`);
-      } else {
-        console.log("Sign-in popup was cancelled or closed by user.");
-      }
+      alert(`Signed up as ${username}`);
+    } else {
+      const existingUsername = userSnap.data().username;
+      alert(`Welcome back, ${existingUsername}!`);
     }
-  });
-}
+
+  } catch (error) {
+    if (
+      error.code !== "auth/cancelled-popup-request" &&
+      error.code !== "auth/popup-closed-by-user"
+    ) {
+      alert(`Sign-in failed: ${error.message}`);
+    } else {
+      console.log("Sign-in popup was cancelled or closed by user.");
+    }
+  }
+};
+
+
+const handleSignOut = async () => {
+  try {
+    await signOut(auth);
+    console.log("User signed out");
+  } catch (error) {
+    alert(`Sign-out failed: ${error.message}`);
+  }
+};
+
+
+const updateGoogleButton = (user) => {
+  if (!googleLogin || !buttonText) return;
+
+ 
+  const clone = googleLogin.cloneNode(true);
+  googleLogin.replaceWith(clone);
+
+  const icon = clone.querySelector("ion-icon");
+  const text = clone.querySelector(".btn-text");
+
+  if (user) {
+    text.textContent = "Log out";
+    clone.addEventListener("click", handleSignOut);
+  } else {
+    text.textContent = "Sign in with Google";
+    clone.addEventListener("click", handleSignIn);
+  }
+
+ 
+  googleLogin = clone;
+};
 
 
 onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log('User signed in:', user.email, user.photoURL);
-    if (googleLogin) {
-      googleLogin.style.display = "none"; 
-    }
-  }
+  updateGoogleButton(user);
 });
 
 export { auth, db };
