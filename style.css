@@ -387,7 +387,7 @@ h1 {
 
 #side-color-legend {
     position: fixed;
-    top: 50%;
+    top: 23.1%;
     left: 20px;
     transform: translateY(-50%);
     background-color: var(--accent-light);
