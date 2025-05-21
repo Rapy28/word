@@ -364,18 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
         isSubmitting = false;
     }
 
-    function displayWord(word) {
-        wordDisplay.innerHTML = '';
-     
-        [...word].forEach((letter, index) => {
-          const span = document.createElement('span');
-          span.textContent = letter;
-          span.classList.add('letter');
-          span.style.animationDelay = `${index * 0.1}s`;
-          wordDisplay.appendChild(span);
-        });
-    }
-
     startGameBtn.addEventListener('click', initializeGame);
     restartGameBtn.addEventListener('click', resetGame);
 
